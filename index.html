@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Rulzz OfficiaL - Payment Gateway</title>
+  <link rel="icon" href="http://cdn.rulzzofficial.biz.id/files/0/logo_MKbvEG.jpeg">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-1: #0a1129;
+      --bg-2: #0f1a3d;
+      --card: rgba(30, 58, 138, 0.15);
+      --muted: #93c5fd;
+      --primary: #2563eb;
+      --glass-border: rgba(59, 130, 246, 0.15);
+      --text: #e0f2fe;
+      --success: #22c55e;
+      --error: #ef4444;
+      --warning: #f59e0b;
+    }
+    
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    
+    input, button, textarea, [contenteditable] {
+      -webkit-user-select: auto;
+      -moz-user-select: auto;
+      -ms-user-select: auto;
+      user-select: auto;
+    }
+    
+    html {
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    /* PAGE LOADER */
+    #pageLoader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-1);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s ease;
+    }
+    .loader-wrapper {
+      text-align: center;
+      animation: fadeInScale 1s ease;
+    }
+    @keyframes fadeInScale {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .loader-logo {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 25px;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(37,99,235,0.4);
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+    .loader-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .loader-text {
+      color: var(--text);
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--primary), #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 200% auto;
+      animation: gradient 3s linear infinite;
+    }
+    @keyframes gradient {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+    .loader-progress {
+      width: 280px;
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .loader-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), #3b82f6, #8b5cf6);
+      background-size: 200% auto;
+      animation: loader-progress 2s ease-in-out forwards, gradient 3s linear infinite;
+    }
+    @keyframes loader-progress {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+    .loader-sub {
+      margin-top: 20px;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      animation: pulse 2s infinite;
+    }
+    
+    .nav-full {
+      width: 100vw;
+      background: rgba(15, 26, 61, 0.95);
+      backdrop-filter: blur(22px);
+      border-bottom: 1px solid var(--glass-border);
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .nav-content {
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 16px;
+      height: 65px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .glass {
+      background: var(--card);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(90deg, var(--primary), #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(90deg, var(--primary), #3b82f6);
+      color: white;
+      padding: 14px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      font-size: 1.1rem;
+    }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+    }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .btn-secondary {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid var(--glass-border);
+      color: var(--text);
+      padding: 12px 20px;
+      border-radius: 40px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-secondary:hover {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: #3b82f6;
+    }
+    
+    .hamburger {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .hamburger .line {
+      width: 20px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .hamburger.active .line:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .hamburger.active .line:nth-child(2) { opacity: 0; }
+    .hamburger.active .line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+    
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 280px;
+      height: 100vh;
+      background: rgba(10, 17, 41, 0.98);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid var(--glass-border);
+      z-index: 999;
+      transition: left 0.3s ease;
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+    }
+    .mobile-menu.open { left: 0; }
+    
+    .api-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      background: rgba(34,197,94,0.15);
+      color: #4ade80;
+    }
+    .api-status::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 
+      0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.7); } 
+      70% { box-shadow: 0 0 0 6px rgba(74,222,128,0); } 
+    }
+    
+    .payment-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 12px;
+    }
+    .payment-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(59, 130, 246, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .payment-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      flex-shrink: 0;
+    }
+    .dana-icon { 
+      background: linear-gradient(135deg, #008FE5, #00A0E9);
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .seabank-icon { 
+      background: linear-gradient(135deg, #00A0E9, #008FE5);
+      font-size: 28px;
+    }
+    .gopay-icon { 
+      background: linear-gradient(135deg, #00AA13, #00B215);
+      font-size: 28px;
+    }
+    .qris-icon { 
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      font-size: 26px;
+    }
+    
+    .payment-details {
+      flex: 1;
+    }
+    .payment-details h3 {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+    .payment-details p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    
+    .input-with-rp {
+      position: relative;
+      width: 100%;
+    }
+    .input-with-rp .rp-label {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    .form-input {
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid var(--glass-border);
+      border-radius: 40px;
+      padding: 14px 20px 14px 50px;
+      color: var(--text);
+      width: 100%;
+      height: 56px;
+      font-size: 1.1rem;
+      user-select: auto;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+    
+    .quick-amount {
+      background: rgba(37, 99, 235, 0.1);
+      border: 1px solid #2f4172;
+      border-radius: 40px;
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quick-amount:hover {
+      background: #1e3a8a;
+      border-color: #3b82f6;
+    }
+    
+    .amount-preview {
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 18px;
+      margin: 20px 0;
+    }
+    .amount-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .amount-row:last-child { border-bottom: none; }
+    .amount-row.total {
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: #60a5fa;
+    }
+    
+    .fee-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(37,99,235,0.1);
+      border-radius: 30px;
+      padding: 8px 16px;
+      margin: 10px 0 5px;
+      border: 1px solid rgba(37,99,235,0.2);
+      font-size: 0.9rem;
+    }
+    
+    .fee-rate {
+      color: var(--warning);
+      font-weight: 600;
+    }
+    
+    .loader-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(37,99,235,0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 9998;
+      display: none;
+    }
+    .popup-container {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+    }
+    .popup-container.active { display: flex; }
+    .popup-container.active ~ .popup-overlay { display: block; }
+    .popup-content {
+      background: var(--card);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 28px;
+      max-width: 400px;
+      width: 100%;
+      position: relative;
+      animation: popupFadeIn 0.5s ease-out;
+    }
+    @keyframes popupFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .popup-container.closing .popup-content {
+      animation: popupFadeOut 0.5s ease-in forwards; /* DIPERLAMBAT JADI 0.5s */
+    }
+    
+    @keyframes popupFadeOut {
+      from {
+        opacity: 1;
+        transform: scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+    }
+    
+    .popup-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: white;
+      font-size: 18px;
+    }
+    .popup-close:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .qrcode-container {
+      background: transparent;
+      padding: 0;
+      display: inline-block;
+      margin: 15px 0;
+    }
+    
+    .qrcode-image {
+      width: 400px;
+      height: 400px;
+      object-fit: contain;
+      border-radius: 20px;
+    }
+    
+    .manual-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: rgba(37,99,235,0.1);
+      padding: 8px 16px;
+      border-radius: 30px;
+      margin-top: 10px;
+      border: 1px solid rgba(37,99,235,0.2);
+    }
+    
+    .view-qris-btn {
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid var(--glass-border);
+      color: var(--text);
+      padding: 12px 24px;
+      border-radius: 40px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .view-qris-btn:hover {
+      background: rgba(59, 130, 246, 0.3);
+      border-color: #3b82f6;
+    }
+    
+    /* SUPPORT PAYMENT - TANPA ICON */
+    .support-payment {
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      padding: 15px;
+      margin-top: 10px;
+    }
+    
+    .payment-text {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    
+    .payment-text span {
+      background: rgba(37,99,235,0.1);
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border: 1px solid rgba(37,99,235,0.2);
+    }
+    
+    /* API INFO */
+    .api-info {
+      background: rgba(37,99,235,0.1);
+      border: 1px solid rgba(37,99,235,0.2);
+      border-radius: 40px;
+      padding: 10px 20px;
+      margin-top: 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    
+    .api-info a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .api-info a:hover {
+      text-decoration: underline;
+    }
+    
+    /* TOAST NOTIFICATION - TINGGI NORMAL */
+    #toastContainer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+      max-width: 350px;
+      max-height: 80vh;
+      overflow-y: hidden;
+    }
+    
+    .toast {
+      background: var(--card);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      border-radius: 50px;
+      padding: 12px 24px;
+      color: var(--text);
+      font-size: 0.95rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateX(120%);
+      animation: slideInRight 0.3s forwards;
+      pointer-events: none;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    
+    .toast.fade-out {
+      animation: fadeOut 0.3s forwards;
+    }
+    
+    @keyframes slideInRight {
+      from { transform: translateX(120%); }
+      to { transform: translateX(0); }
+    }
+    
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(120%); }
+    }
+    
+    .toast.success { border-left: 4px solid var(--success); }
+    .toast.error { border-left: 4px solid var(--error); }
+    .toast.warning { border-left: 4px solid var(--warning); }
+    
+    .toast i {
+      font-size: 1.2rem;
+    }
+    .toast.success i { color: var(--success); }
+    .toast.error i { color: var(--error); }
+    .toast.warning i { color: var(--warning); }
+    
+    footer {
+      margin-top: 50px;
+      padding: 20px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      text-align: center;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.9rem;
+    }
+    
+    main { padding-top: 80px; }
+    
+    .quick-section {
+      margin-top: 15px;
+    }
+    
+    .quick-label {
+      color: var(--primary);
+      font-size: 0.85rem;
+      background: rgba(37,99,235,0.1);
+      padding: 4px 12px;
+      border-radius: 30px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    
+    @media (max-width: 768px) {
+      .payment-icon { width: 48px; height: 48px; }
+      .dana-icon { font-size: 12px; }
+      .seabank-icon, .gopay-icon { font-size: 24px; }
+      .qrcode-image { width: 320px; height: 320px; }
+      .payment-text span { font-size: 0.7rem; }
+    }
+    
+    @media (max-width: 480px) {
+      .qrcode-image { width: 280px; height: 280px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- PAGE LOADER -->
+  <div id="pageLoader">
+    <div class="loader-wrapper">
+      <div class="loader-logo">
+        <img src="http://cdn.rulzzofficial.biz.id/files/0/logo_MKbvEG.jpeg" alt="Rulzz Logo">
+      </div>
+      <div class="loader-text">Rulzz OfficiaL</div>
+      <div class="loader-progress">
+        <div class="loader-progress-bar"></div>
+      </div>
+      <div class="loader-sub">Payment Gateway</div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer"></div>
+
+  <!-- NAVBAR -->
+  <header class="nav-full">
+    <div class="nav-content">
+      <div class="flex items-center gap-4">
+        <div id="hamburger" class="hamburger lg:hidden">
+          <span class="line"></span>
+          <span class="line"></span>
+          <span class="line"></span>
+        </div>
+        <div class="flex items-center gap-3">
+          <h1 class="text-xl font-bold gradient-text">Rulzz OfficiaL</h1>
+          <span class="api-status">Online</span>
+        </div>
+      </div>
+      
+      <nav class="hidden lg:flex items-center gap-6">
+        <a href="/" class="hover:text-white">Home</a>
+        <a href="https://www.rulzzofficial.biz.id" target="_blank" class="hover:text-white">Portofolio</a>
+        <a href="https://api.rulzzofficial.biz.id" target="_blank" class="text-blue-300">Rest Api</a>
+        <a href="/docs" class="text-green-300 font-medium"><i class="fas fa-code mr-1"></i> API Docs</a>
+      </nav>
+      
+      <a href="https://t.me/@rulzzofficial" target="_blank" class="btn-secondary text-sm">
+        <i class="fab fa-telegram"></i>
+        <span>Support</span>
+      </a>
+    </div>
+  </header>
+  
+  <!-- MOBILE MENU -->
+  <div id="mobileMenu" class="mobile-menu p-6">
+    <div class="flex justify-between items-center mb-8">
+      <span class="text-lg font-bold gradient-text">Rulzz</span>
+      <button id="closeMenu" class="text-2xl text-gray-400 hover:text-white">&times;</button>
+    </div>
+    <nav class="flex flex-col gap-4">
+      <a href="/" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5"><i class="fas fa-home w-5"></i>Home</a>
+      <a href="https://www.rulzzofficial.biz.id" target="_blank" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5"><i class="fas fa-user w-5"></i>Portofolio</a>
+      <a href="https://produk.rulzzofficial.biz.id" target="_blank" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5"><i class="fas fa-store w-5"></i>Produk</a>
+      <a href="https://api.rulzzofficial.biz.id" target="_blank" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5"><i class="fas fa-code w-5"></i>Rest Api</a>
+      <a href="/docs" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5"><i class="fas fa-code w-5"></i> API Docs</a>
+      <hr class="border-white/10 my-2">
+      <a href="https://t.me/@rulzzofficial" target="_blank" class="flex items-center gap-3 p-3 rounded-lg bg-blue-600/20"><i class="fab fa-telegram"></i>@rulzzofficial</a>
+    </nav>
+  </div>
+  
+  <!-- MAIN CONTENT -->
+  <main>
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-8 animate__animated animate__fadeInDown">
+        <h1 class="text-2xl md:text-3xl font-bold gradient-text">Rulzz Official Payment</h1>
+        <p class="text-gray-400 mt-2">Pilih metode pembayaran</p>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- LEFT: TRANSFER MANUAL -->
+        <div class="lg:col-span-2">
+          <div class="glass p-6 animate__animated animate__fadeInLeft">
+            <h2 class="text-xl font-bold gradient-text mb-4">Transfer Manual</h2>
+            
+            <!-- DANA -->
+            <div class="payment-card manual-trigger" data-method="DANA" data-number="085182337599" data-name="H*** N****">
+              <div class="payment-icon dana-icon">DANA</div>
+              <div class="payment-details">
+                <h3>Dana</h3>
+                <p>085182337599</p>
+              </div>
+              <i class="fas fa-chevron-right text-gray-500"></i>
+            </div>
+            
+            <!-- SEABANK -->
+            <div class="payment-card manual-trigger" data-method="SEABANK" data-number="901031732471" data-name="H*** N*****">
+              <div class="payment-icon seabank-icon"><i class="fas fa-university"></i></div>
+              <div class="payment-details">
+                <h3>Seabank</h3>
+                <p>901031732471</p>
+              </div>
+              <i class="fas fa-chevron-right text-gray-500"></i>
+            </div>
+            
+            <!-- GOPAY -->
+            <div class="payment-card manual-trigger" data-method="GOPAY" data-number="085182337599" data-name="Rulzz OfficiaL">
+              <div class="payment-icon gopay-icon"><i class="fas fa-wallet"></i></div>
+              <div class="payment-details">
+                <h3>GoPay</h3>
+                <p>085182337599</p>
+              </div>
+              <i class="fas fa-chevron-right text-gray-500"></i>
+            </div>
+            
+            <!-- QRIS MANUAL -->
+            <div class="payment-card qris-manual-trigger">
+              <div class="payment-icon qris-icon"><i class="fas fa-qrcode"></i></div>
+              <div class="payment-details">
+                <h3>QRIS</h3>
+                <p>OK21606067 (Rulzz Official)</p>
+              </div>
+              <i class="fas fa-chevron-right text-gray-500"></i>
+            </div>
+            
+            <!-- INSTRUKSI -->
+            <div class="mt-5 p-4 bg-blue-900/20 border border-blue-800/30 rounded-xl">
+              <p class="text-sm text-blue-300 mb-2"><i class="fas fa-info-circle mr-2"></i>Instruksi:</p>
+              <ul class="text-sm text-gray-400 list-disc list-inside space-y-1">
+                <li>Klik metode, copy nomor / download QRIS</li>
+                <li>Transfer sesuai nominal</li>
+                <li>Konfirmasi ke Telegram</li>
+              </ul>
+              <div class="mt-3 flex items-center gap-2">
+                <i class="fab fa-telegram text-blue-400"></i>
+                <a href="https://t.me/@rulzzofficial" target="_blank" class="text-blue-300 text-sm">@rulzzofficial</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- RIGHT: QRIS OTOMATIS -->
+        <div>
+          <div class="glass p-6 animate__animated animate__fadeInRight">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="payment-icon qris-icon"><i class="fas fa-qrcode"></i></div>
+              <div>
+                <h2 class="text-xl font-bold">QRIS Otomatis</h2>
+                <p class="text-xs text-gray-400">via payment gateway</p>
+              </div>
+            </div>
+            
+            <!-- INPUT NOMINAL -->
+            <div class="mb-4">
+              <label class="block text-sm text-gray-400 mb-2">Nominal (Rp)</label>
+              <div class="input-with-rp">
+                <span class="rp-label">Rp</span>
+                <input type="number" id="amountInput" class="form-input" value="0" min="0" step="1" placeholder="Masukkan nominal">
+              </div>
+              
+              <!-- NOMINAL CEPAT -->
+              <div class="quick-section">
+                <div class="quick-label">Nominal Cepat</div>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <span class="quick-amount" onclick="setAmount(10000)">10k</span>
+                  <span class="quick-amount" onclick="setAmount(20000)">20k</span>
+                  <span class="quick-amount" onclick="setAmount(50000)">50k</span>
+                  <span class="quick-amount" onclick="setAmount(100000)">100k</span>
+                  <span class="quick-amount" onclick="setAmount(105000)">105k</span>
+                  <span class="quick-amount" onclick="setAmount(250000)">250k</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- PREVIEW TOTAL -->
+            <div class="amount-preview">
+              <div class="amount-row">
+                <span>Nominal</span>
+                <span id="nominalDisplay">Rp 0</span>
+              </div>
+              <div class="amount-row">
+                <span>Fee ( <span id="feeRateDisplay">0,7%</span> )</span>
+                <span id="feeDisplay" class="text-yellow-400">Rp 0</span>
+              </div>
+              <div class="amount-row total">
+                <span>Total Bayar</span>
+                <span id="totalDisplay">Rp 0</span>
+              </div>
+            </div>
+            
+            <!-- FEE INFO (DI BAWAH NOMINAL) -->
+            <div class="fee-info">
+              <span>💰 Biaya Layanan:</span>
+              <span class="fee-rate" id="feePercentage">0,7%</span>
+            </div>
+            
+            <!-- SUPPORT PAYMENT (DI BAWAH FEE) -->
+            <div class="support-payment">
+              <h4 class="text-xs text-center text-gray-400">Didukung oleh:</h4>
+              <div class="payment-text">
+                <span>DANA</span>
+                <span>OVO</span>
+                <span>GoPay</span>
+                <span>ShopeePay</span>
+                <span>Bank</span>
+                <span>LinkAja</span>
+              </div>
+            </div>
+            
+            <!-- BUTTON BAYAR -->
+            <button id="payButton" class="btn-primary mt-4">
+              <i class="fas fa-qrcode"></i>
+              Bayar Sekarang
+            </button>
+            <p class="text-xs text-gray-500 text-center mt-2">Minimal Rp 1.000 - Maksimal Rp 1.000.000</p>
+            
+            <!-- API INFO -->
+            <div class="api-info">
+              <i class="fas fa-code text-blue-300 mr-1"></i>
+              Rulzz OfficiaL menyediakan <a href="/docs">API publik</a> untuk siapapun
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- FOOTER -->
+  <footer>
+    <div>
+      <p>© 2022 - 2026 Rulzz OfficiaL | All Right Reserved</p>
+      <div class="social-links mt-3 flex justify-center gap-4">
+        <a href="https://github.com/RulzzOfficiaL" target="_blank" class="text-gray-400 hover:text-white"><i class="fab fa-github"></i></a>
+        <a href="https://www.youtube.com/@bangrulzz44" target="_blank" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
+        <a href="https://www.instagram.com/rulzz00__" target="_blank" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+        <a href="https://wa.me/6285133226206" target="_blank" class="text-gray-400 hover:text-white"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+  </footer>
+  
+  <!-- POPUP MANUAL TRANSFER -->
+  <div class="popup-overlay" id="popupOverlay"></div>
+  <div id="manualPopup" class="popup-container">
+    <div class="popup-content">
+      <div class="popup-close" onclick="closeManualPopup()">
+        <i class="fas fa-times"></i>
+      </div>
+      
+      <h3 class="text-lg font-bold gradient-text mb-4" id="popupMethodTitle">DANA</h3>
+      
+      <div class="space-y-4">
+        <div>
+          <p class="text-sm text-gray-400">Nomor</p>
+          <p class="text-xl font-mono font-bold" id="popupNumber">085182337599</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-400">Atas Nama</p>
+          <p id="popupName">H*** N****</p>
+        </div>
+        <button id="copyButton" class="btn-primary">
+          <i class="fas fa-copy mr-2"></i>Copy Nomor
+        </button>
+        <button onclick="closeManualPopup()" class="btn-secondary w-full">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- POPUP QRIS MANUAL -->
+  <div id="qrisManualPopup" class="popup-container">
+    <div class="popup-content text-center">
+      <div class="popup-close" onclick="closeQRISManualPopup()">
+        <i class="fas fa-times"></i>
+      </div>
+      
+      <h3 class="text-lg font-bold gradient-text mb-2">QRIS Rulzz Official</h3>
+      <p class="text-sm text-gray-400 mb-3">ID: OK21606067</p>
+      
+      <div class="qrcode-container">
+        <img id="qrisManualImage" src="http://cdn.rulzzofficial.biz.id/files/0/qris_tBYHm9.jpeg" alt="QRIS Rulzz" class="qrcode-image">
+      </div>
+      
+      <div class="manual-note">
+        <i class="fas fa-info-circle mr-1"></i>
+        Manual transfer (tidak otomatis) • Jika tidak bisa download, screenshot saja
+      </div>
+      
+      <button id="downloadQRISManualBtn" class="btn-primary mt-4">
+        <i class="fas fa-download mr-2"></i>Download QRIS
+      </button>
+      
+      <button onclick="closeQRISManualPopup()" class="btn-secondary w-full mt-2">
+        Close
+      </button>
+    </div>
+  </div>
+  
+  <!-- LOADING MODAL -->
+  <div class="popup-overlay" id="loadingOverlay"></div>
+  <div id="loadingPopup" class="popup-container">
+    <div class="popup-content text-center">
+      <div class="flex justify-center mb-4">
+        <div class="loader-spinner"></div>
+      </div>
+      <h3 class="text-lg font-bold text-blue-300 mb-2">Memproses Pembayaran</h3>
+      <p class="text-sm text-gray-400" id="loadingMessage">Menghubungi gateway...</p>
+    </div>
+  </div>
+  
+  <script>
+    // ========== ANTI INSPECT ==========
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      showToast('Fitur ini tidak tersedia', 'warning');
+    });
+    
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'F12' || 
+          (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+          (e.ctrlKey && e.key === 'U')) {
+        e.preventDefault();
+        showToast('Developer tools tidak tersedia', 'warning');
+      }
+    });
+    
+    // ========== PAGE LOADER ==========
+    setTimeout(() => {
+      document.getElementById('pageLoader').style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('pageLoader').style.display = 'none';
+      }, 800);
+    }, 2000);
+
+    // STATE
+    let currentAmount = 0;
+    let isProcessing = false;
+    let toastTimeout = null;
+    
+    // ========== HITUNG FEE ==========
+    function calculateFee(amount) {
+      if (amount <= 0) return 0;
+      
+      if (amount < 105000) {
+        return Math.ceil(amount * 0.007);
+      } else {
+        return Math.ceil(amount * 0.01);
+      }
+    }
+    
+    // ========== UPDATE DISPLAY ==========
+    function updateAmount() {
+      let val = parseInt(amountInput.value) || 0;
+      currentAmount = val;
+      
+      let fee = calculateFee(val);
+      let total = val + fee;
+      
+      let feePercentage = val < 105000 ? '0,7%' : '1%';
+      
+      document.getElementById('feePercentage').textContent = feePercentage;
+      document.getElementById('feeRateDisplay').textContent = feePercentage;
+      
+      nominalDisplay.textContent = 'Rp ' + val.toLocaleString('id-ID');
+      feeDisplay.textContent = 'Rp ' + fee.toLocaleString('id-ID');
+      totalDisplay.textContent = 'Rp ' + total.toLocaleString('id-ID');
+    }
+    
+    // ========== TOAST NOTIFICATION ==========
+    function showToast(message, type = 'info') {
+      if (toastTimeout) {
+        clearTimeout(toastTimeout);
+      }
+      
+      const toastContainer = document.getElementById('toastContainer');
+      
+      while (toastContainer.children.length >= 5) {
+        const oldestToast = toastContainer.lastChild;
+        if (oldestToast) {
+          oldestToast.remove();
+        }
+      }
+      
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      
+      let icon = 'fa-info-circle';
+      if (type === 'success') icon = 'fa-check-circle';
+      if (type === 'error') icon = 'fa-times-circle';
+      
+      toast.innerHTML = `
+        <i class="fas ${icon}"></i>
+        <span>${message}</span>
+      `;
+      
+      toastContainer.insertBefore(toast, toastContainer.firstChild);
+      
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('fade-out');
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.remove();
+          }
+        }, 300);
+      }, 4700);
+    }
+    
+    // ========== POPUP CLOSE DENGAN ANIMASI ==========
+    function closePopupWithAnimation(popup, overlay) {
+      popup.classList.add('closing');
+      setTimeout(() => {
+        popup.classList.remove('active', 'closing');
+        overlay.style.display = 'none';
+        document.body.style.overflow = '';
+      }, 500); // DIPERLAMBAT JADI 500ms
+    }
+    
+    // ========== MOBILE MENU ==========
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenu = document.getElementById('closeMenu');
+    
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      mobileMenu.classList.toggle('open');
+    });
+    
+    closeMenu.addEventListener('click', () => {
+      hamburger.classList.remove('active');
+      mobileMenu.classList.remove('open');
+    });
+    
+    document.addEventListener('click', (e) => {
+      if (!mobileMenu.contains(e.target) && !hamburger.contains(e.target) && mobileMenu.classList.contains('open')) {
+        hamburger.classList.remove('active');
+        mobileMenu.classList.remove('open');
+      }
+    });
+    
+    // ========== MANUAL PAYMENT ==========
+    const manualTriggers = document.querySelectorAll('.manual-trigger');
+    const popupOverlay = document.getElementById('popupOverlay');
+    const manualPopup = document.getElementById('manualPopup');
+    const popupMethodTitle = document.getElementById('popupMethodTitle');
+    const popupNumber = document.getElementById('popupNumber');
+    const popupName = document.getElementById('popupName');
+    const copyButton = document.getElementById('copyButton');
+    
+    manualTriggers.forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        popupMethodTitle.textContent = trigger.dataset.method;
+        popupNumber.textContent = trigger.dataset.number;
+        popupName.textContent = trigger.dataset.name;
+        
+        manualPopup.classList.add('active');
+        popupOverlay.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    
+    window.closeManualPopup = () => {
+      closePopupWithAnimation(manualPopup, popupOverlay);
+    };
+    
+    copyButton.addEventListener('click', () => {
+      navigator.clipboard.writeText(popupNumber.textContent).then(() => {
+        showToast('Nomor berhasil disalin!', 'success');
+        closeManualPopup();
+      }).catch(() => {
+        showToast('Gagal menyalin nomor', 'error');
+      });
+    });
+    
+    popupOverlay.addEventListener('click', closeManualPopup);
+    
+    // ========== QRIS MANUAL POPUP ==========
+    const qrisManualTrigger = document.querySelector('.qris-manual-trigger');
+    const qrisManualPopup = document.getElementById('qrisManualPopup');
+    
+    if (qrisManualTrigger) {
+      qrisManualTrigger.addEventListener('click', () => {
+        qrisManualPopup.classList.add('active');
+        popupOverlay.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      });
+    }
+    
+    window.closeQRISManualPopup = () => {
+      closePopupWithAnimation(qrisManualPopup, popupOverlay);
+    };
+    
+    // ========== DOWNLOAD QRIS MANUAL (FIX - SAMA KAYA QRIS.HTML) ==========
+    document.getElementById('downloadQRISManualBtn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      showToast('Menyiapkan download...', 'info');
+      
+      const qrSrc = document.getElementById('qrisManualImage').src;
+      
+      try {
+        const response = await fetch(qrSrc, {
+          mode: 'cors',
+          cache: 'no-cache'
+        });
+        
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = 'QRIS-Rulzz.png';
+        document.body.appendChild(link);
+        link.click();
+        
+        setTimeout(() => {
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(blobUrl);
+        }, 100);
+        
+        showToast('QRIS berhasil di download!', 'success');
+      } catch (error) {
+        console.error('Download error:', error);
+        showToast('Gagal download. Screenshot saja.', 'warning');
+      }
+    });
+    
+    // ========== AMOUNT HANDLER ==========
+    const amountInput = document.getElementById('amountInput');
+    const nominalDisplay = document.getElementById('nominalDisplay');
+    const feeDisplay = document.getElementById('feeDisplay');
+    const totalDisplay = document.getElementById('totalDisplay');
+    
+    window.setAmount = (amt) => {
+      amountInput.value = amt;
+      updateAmount();
+    };
+    
+    amountInput.addEventListener('input', updateAmount);
+    updateAmount();
+    
+    // ========== QRIS PAYMENT ==========
+    const payButton = document.getElementById('payButton');
+    const loadingPopup = document.getElementById('loadingPopup');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const loadingMessage = document.getElementById('loadingMessage');
+    
+    payButton.addEventListener('click', async () => {
+      if (isProcessing) return;
+      
+      if (currentAmount < 1000) {
+        showToast('Minimal pembayaran Rp 1.000', 'error');
+        return;
+      }
+      
+      if (currentAmount > 1000000) {
+        showToast('Maksimal pembayaran Rp 1.000.000', 'error');
+        return;
+      }
+      
+      isProcessing = true;
+      loadingPopup.classList.add('active');
+      loadingOverlay.style.display = 'block';
+      loadingMessage.textContent = 'Membuat transaksi...';
+      
+      try {
+        const response = await fetch(`/api/createpayment?amount=${currentAmount}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          loadingMessage.textContent = 'Transaksi berhasil, mengalihkan...';
+          setTimeout(() => {
+            window.location.href = `/invoice/${data.transactionId}`;
+          }, 1000);
+        } else {
+          throw new Error(data.message || 'Gagal membuat transaksi');
+        }
+      } catch (error) {
+        console.error('Payment error:', error);
+        showToast('Gagal membuat transaksi', 'error');
+        loadingPopup.classList.remove('active');
+        loadingOverlay.style.display = 'none';
+        isProcessing = false;
+      }
+    });
+    
+    // ========== CLEANUP ==========
+    window.addEventListener('beforeunload', () => {
+      if (loadingPopup.classList.contains('active')) {
+        loadingPopup.classList.remove('active');
+        loadingOverlay.style.display = 'none';
+      }
+      if (toastTimeout) {
+        clearTimeout(toastTimeout);
+      }
+    });
+  </script>
+</body>
+</html>
